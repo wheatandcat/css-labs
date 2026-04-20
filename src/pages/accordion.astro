@@ -1,0 +1,200 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const items = [
+  {
+    question: "Astroとは何ですか？",
+    answer:
+      "Astroはコンテンツ主導のWebサイト構築に特化したWebフレームワークです。デフォルトでJavaScriptを最小限に抑え、高速なページを生成します。",
+  },
+  {
+    question: "<details> 要素の特徴は？",
+    answer:
+      "<details> と <summary> はHTMLネイティブのアコーディオン要素です。CSSアニメーションを加えるだけで、JavaScriptなしで動作する折りたたみUIが実現できます。",
+  },
+  {
+    question: "ブラウザ対応状況は？",
+    answer:
+      "<details> 要素は全モダンブラウザ（Chrome、Firefox、Safari、Edge）で広くサポートされています。",
+  },
+  {
+    question: "exclusive accordion（排他的アコーディオン）とは？",
+    answer:
+      'Chrome 120以降、<details name="xxx"> のように同じname属性を持つ <details> グループで、1つだけ開く排他的アコーディオンが実現できます。',
+  },
+];
+---
+
+<Layout
+  title="Details Accordion"
+  description="details/summary を使ったアコーディオンのデモ"
+>
+  <a href="/" class="back">← 一覧へ</a>
+  <h1 class="page-title">Details Accordion</h1>
+  <p class="page-subtitle">
+    <code>&lt;details&gt;</code> と <code>&lt;summary&gt;</code> を使ったネイティブアコーディオン
+  </p>
+
+  <section class="section">
+    <h2 class="section-title">基本アコーディオン</h2>
+    <p class="section-desc">
+      CSSトランジション付き。JavaScriptなしで動作します。
+    </p>
+    <div class="accordion">
+      {
+        items.map((item) => (
+          <details class="accordion-item">
+            <summary class="accordion-summary">
+              <span>{item.question}</span>
+              <span class="icon" aria-hidden="true">
+                +
+              </span>
+            </summary>
+            <div class="accordion-body">
+              <p>{item.answer}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">排他的アコーディオン</h2>
+    <p class="section-desc">
+      同じ <code>name</code> 属性で1つだけ開く（Chrome 120+ / Safari 17.2+）
+    </p>
+    <div class="accordion">
+      {
+        items.map((item, i) => (
+          <details class="accordion-item" name="exclusive">
+            <summary class="accordion-summary">
+              <span>{item.question}</span>
+              <span class="icon" aria-hidden="true">
+                +
+              </span>
+            </summary>
+            <div class="accordion-body">
+              <p>{item.answer}</p>
+            </div>
+          </details>
+        ))
+      }
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .back {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+  }
+  .back:hover {
+    color: var(--color-text);
+  }
+
+  .section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-desc {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+  }
+
+  code {
+    background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+    color: var(--color-accent-light);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+
+  .accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .accordion-item {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .accordion-item[open] {
+    border-color: var(--color-accent);
+  }
+
+  .accordion-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    list-style: none;
+    user-select: none;
+    transition: background 0.15s;
+  }
+
+  .accordion-summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .accordion-summary:hover {
+    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  }
+
+  .accordion-item[open] .accordion-summary {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .icon {
+    font-size: 1.25rem;
+    color: var(--color-accent-light);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .accordion-item[open] .icon {
+    transform: rotate(45deg);
+  }
+
+  .accordion-body {
+    padding: 1rem 1.25rem;
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    animation: slide-down 0.2s ease;
+  }
+
+  @keyframes slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>

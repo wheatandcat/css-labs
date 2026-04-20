@@ -1,0 +1,204 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Popover API" description="Popover API のデモ">
+  <a href="/" class="back">← 一覧へ</a>
+  <h1 class="page-title">Popover API</h1>
+  <p class="page-subtitle">JavaScriptなしで動作するネイティブのPopover API</p>
+
+  <section class="section">
+    <h2 class="section-title">基本的なポップオーバー</h2>
+    <p class="section-desc">
+      <code>popover</code> 属性と <code>popovertarget</code> で宣言的に実装。ライトディスミスで閉じる。
+    </p>
+    <button class="btn" popovertarget="basic-popover"
+      >ポップオーバーを開く</button
+    >
+    <div id="basic-popover" popover class="popover">
+      <p>これはネイティブPopover APIです。</p>
+      <p>外側をクリックするか <kbd>Esc</kbd> で閉じます。</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">ツールチップ風ポップオーバー</h2>
+    <p class="section-desc">
+      <code>popover="auto"</code> で同時に1つだけ表示されます。
+    </p>
+    <div class="btn-group">
+      <button class="btn btn-outline" popovertarget="tip-1">ヒント1</button>
+      <button class="btn btn-outline" popovertarget="tip-2">ヒント2</button>
+      <button class="btn btn-outline" popovertarget="tip-3">ヒント3</button>
+    </div>
+    <div id="tip-1" popover="auto" class="popover popover--tip">
+      <strong>ヒント1</strong><br />Popover APIはChrome 114+で対応。
+    </div>
+    <div id="tip-2" popover="auto" class="popover popover--tip">
+      <strong>ヒント2</strong><br />autoは同時に1つのみ表示します。
+    </div>
+    <div id="tip-3" popover="auto" class="popover popover--tip">
+      <strong>ヒント3</strong><br />手動で閉じたい場合は <code
+        >popover="manual"</code
+      >。
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">メニュー (manual)</h2>
+    <p class="section-desc">
+      <code>popover="manual"</code> はライトディスミスなし。ボタンで明示的に閉じます。
+    </p>
+    <button class="btn" popovertarget="menu-popover">メニューを開く</button>
+    <div id="menu-popover" popover="manual" class="popover popover--menu">
+      <ul class="menu-list">
+        <li><a href="#">プロフィール</a></li>
+        <li><a href="#">設定</a></li>
+        <li><a href="#">ログアウト</a></li>
+      </ul>
+      <button
+        class="btn btn-ghost btn-sm"
+        popovertarget="menu-popover"
+        popovertargetaction="hide">閉じる</button
+      >
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .back {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+  }
+  .back:hover {
+    color: var(--color-text);
+  }
+
+  .section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-desc {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+  }
+
+  code {
+    background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+    color: var(--color-accent-light);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+
+  kbd {
+    background: var(--color-border);
+    border-radius: 4px;
+    padding: 0.1em 0.4em;
+    font-size: 0.8em;
+  }
+
+  .btn {
+    background: var(--color-accent);
+    color: #fff;
+    border: none;
+    padding: 0.6em 1.4em;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    anchor-name: --trigger;
+  }
+  .btn:hover {
+    opacity: 0.85;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent-light);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+  }
+
+  .btn-sm {
+    padding: 0.4em 1em;
+    font-size: 0.8rem;
+    margin-top: 0.75rem;
+  }
+
+  .btn-group {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .popover {
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 1.25rem 1.5rem;
+    max-width: 300px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .popover p {
+    margin-bottom: 0.5rem;
+  }
+  .popover p:last-child {
+    margin-bottom: 0;
+  }
+
+  .popover--tip {
+    padding: 1rem 1.25rem;
+  }
+
+  .popover--menu {
+    padding: 1rem;
+    min-width: 160px;
+  }
+
+  .menu-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .menu-list a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    color: var(--color-text);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background 0.15s;
+    font-size: 0.9rem;
+  }
+
+  .menu-list a:hover {
+    background: var(--color-border);
+  }
+</style>

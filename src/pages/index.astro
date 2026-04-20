@@ -1,0 +1,102 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const labs = [
+  {
+    slug: "dialog",
+    title: "HTML Dialog",
+    description:
+      "ネイティブの <dialog> 要素でモーダル・非モーダルダイアログを実装",
+    tag: "HTML",
+  },
+  {
+    slug: "popover",
+    title: "Popover API",
+    description: "Popover API でツールチップ・ドロップダウンをJSなしで実装",
+    tag: "HTML",
+  },
+  {
+    slug: "accordion",
+    title: "Details Accordion",
+    description: "<details> と <summary> でアコーディオンUIを実装",
+    tag: "HTML",
+  },
+];
+---
+
+<Layout title="Home">
+  <h1 class="page-title">CSS Labs</h1>
+  <p class="page-subtitle">モダンHTML/CSSのデモ・実験場</p>
+
+  <div class="grid">
+    {
+      labs.map((lab) => (
+        <a href={`/${lab.slug}`} class="card">
+          <span class="tag">{lab.tag}</span>
+          <h2 class="card-title">{lab.title}</h2>
+          <p class="card-desc">{lab.description}</p>
+          <span class="arrow">→</span>
+        </a>
+      ))
+    }
+  </div>
+</Layout>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: inherit;
+    transition:
+      border-color 0.2s,
+      transform 0.15s;
+    position: relative;
+  }
+
+  .card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-accent-light);
+    background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+    padding: 0.2em 0.6em;
+    border-radius: 4px;
+    width: fit-content;
+  }
+
+  .card-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .card-desc {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    flex: 1;
+  }
+
+  .arrow {
+    color: var(--color-accent);
+    font-size: 1.1rem;
+    margin-top: 0.5rem;
+  }
+</style>

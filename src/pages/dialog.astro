@@ -1,0 +1,185 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="HTML Dialog" description="ネイティブ dialog 要素のデモ">
+  <a href="/" class="back">← 一覧へ</a>
+  <h1 class="page-title">HTML Dialog</h1>
+  <p class="page-subtitle">
+    ネイティブの <code>&lt;dialog&gt;</code> 要素を使ったモーダル・非モーダルダイアログ
+  </p>
+
+  <section class="section">
+    <h2 class="section-title">モーダルダイアログ</h2>
+    <p class="section-desc">
+      <code>showModal()</code> で開く。バックドロップ付き、<kbd>Esc</kbd> で閉じられる。
+    </p>
+    <button class="btn" id="open-modal">モーダルを開く</button>
+    <dialog id="modal-dialog" class="dialog">
+      <h3>モーダルダイアログ</h3>
+      <p>
+        これはネイティブの <code>&lt;dialog&gt;</code> 要素です。<kbd>Esc</kbd> キーまたは下のボタンで閉じられます。
+      </p>
+      <div class="dialog-actions">
+        <button class="btn btn-ghost" id="close-modal">キャンセル</button>
+        <button class="btn" id="confirm-modal">確認</button>
+      </div>
+    </dialog>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">非モーダルダイアログ</h2>
+    <p class="section-desc">
+      <code>show()</code> で開く。バックドロップなし、背後の操作が可能。
+    </p>
+    <button class="btn btn-outline" id="open-nonmodal">非モーダルを開く</button>
+
+    <dialog id="nonmodal-dialog" class="dialog dialog--nonmodal">
+      <h3>非モーダルダイアログ</h3>
+      <p>背後のコンテンツを操作できます。</p>
+      <button class="btn btn-ghost" id="close-nonmodal">閉じる</button>
+    </dialog>
+  </section>
+</Layout>
+
+<style>
+  .back {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+  }
+  .back:hover {
+    color: var(--color-text);
+  }
+
+  .section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-desc {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 1.25rem;
+  }
+
+  code {
+    background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+    color: var(--color-accent-light);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+
+  kbd {
+    background: var(--color-border);
+    border-radius: 4px;
+    padding: 0.1em 0.4em;
+    font-size: 0.8em;
+  }
+
+  .btn {
+    background: var(--color-accent);
+    color: #fff;
+    border: none;
+    padding: 0.6em 1.4em;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn:hover {
+    opacity: 0.85;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent-light);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+  }
+
+  .dialog {
+    background: var(--color-surface);
+    color: var(--color-text);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    max-width: 420px;
+    width: 90vw;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .dialog h3 {
+    font-size: 1.15rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .dialog p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .dialog::backdrop {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+  }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  .dialog--nonmodal {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    top: auto;
+    left: auto;
+    margin: 0;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  }
+</style>
+
+<script>
+  const modal = document.getElementById("modal-dialog") as HTMLDialogElement;
+  document
+    .getElementById("open-modal")
+    ?.addEventListener("click", () => modal.showModal());
+  document
+    .getElementById("close-modal")
+    ?.addEventListener("click", () => modal.close());
+  document
+    .getElementById("confirm-modal")
+    ?.addEventListener("click", () => modal.close("confirmed"));
+
+  const nonmodal = document.getElementById(
+    "nonmodal-dialog",
+  ) as HTMLDialogElement;
+  document
+    .getElementById("open-nonmodal")
+    ?.addEventListener("click", () => nonmodal.show());
+  document
+    .getElementById("close-nonmodal")
+    ?.addEventListener("click", () => nonmodal.close());
+</script>
