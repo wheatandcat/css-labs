@@ -156,96 +156,11 @@ import Layout from "../layouts/Layout.astro";
 </Layout>
 
 <style>
-  .back {
-    color: var(--color-text-muted);
-    text-decoration: none;
-    font-size: 0.875rem;
-    display: inline-block;
-    margin-bottom: 1.5rem;
-    transition: color 0.2s;
-  }
-  .back:hover {
-    color: var(--color-text);
-  }
-
-  .section {
-    background: var(--color-surface);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    padding: 2rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .section-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.5rem;
-    flex-wrap: wrap;
-  }
-
-  .section-title {
-    font-size: 1.1rem;
-    font-weight: 600;
-  }
-
-  .section-desc {
-    color: var(--color-text-muted);
-    font-size: 0.875rem;
-    margin-bottom: 1.5rem;
-    line-height: 1.7;
-  }
-
-  .section-desc strong {
-    color: var(--color-text);
-  }
-
-  .badge {
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    padding: 0.2em 0.7em;
-    border-radius: 99px;
-  }
-
-  .badge--green {
-    background: color-mix(in srgb, #4ade80 15%, transparent);
-    color: #4ade80;
-  }
-
-  .badge--yellow {
-    background: color-mix(in srgb, #facc15 15%, transparent);
-    color: #facc15;
-  }
-
-  code {
-    background: color-mix(in srgb, var(--color-accent) 15%, transparent);
-    color: var(--color-accent-light);
-    padding: 0.1em 0.4em;
-    border-radius: 4px;
-    font-family: var(--font-mono);
-    font-size: 0.875em;
-  }
-
-  .demo-row {
-    display: flex;
-    gap: 2.5rem;
-    flex-wrap: wrap;
-    align-items: flex-start;
-  }
-
+  /* tooltip固有: demo-group / demo-buttons */
   .demo-group {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
-  }
-
-  .demo-label {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    font-weight: 600;
   }
 
   .demo-buttons {
@@ -537,41 +452,4 @@ import Layout from "../layouts/Layout.astro";
     margin: 0.4rem 0;
   }
 
-  /* ============================================
-     比較表
-     ============================================ */
-  .compare-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-  }
-
-  .compare-table th,
-  .compare-table td {
-    padding: 0.75rem 1rem;
-    text-align: left;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .compare-table th {
-    color: var(--color-text-muted);
-    font-weight: 600;
-    font-size: 0.8rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .compare-table tbody tr:last-child td {
-    border-bottom: none;
-  }
-
-  .compare-table td:first-child {
-    color: var(--color-text-muted);
-    font-size: 0.8rem;
-    white-space: nowrap;
-  }
-
-  .good { color: #4ade80; }
-  .warn { color: #facc15; }
-  .bad  { color: #f87171; }
 </style>
