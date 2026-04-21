@@ -1,0 +1,577 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Tooltip UI" description="モダンCSSだけで作るツールチップUIの比較">
+  <a href="/" class="back">← 一覧へ</a>
+  <h1 class="page-title">Tooltip UI</h1>
+  <p class="page-subtitle">JSなし・モダンCSSだけで作る2つのアプローチを比較</p>
+
+  <!-- ========== Approach 1: ::after + attr() ========== -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        Approach 1 — <code>::after</code> + <code>attr(data-tooltip)</code>
+      </h2>
+      <span class="badge badge--green">全ブラウザ対応</span>
+    </div>
+    <p class="section-desc">
+      擬似要素 <code>::after</code> に <code>content: attr(data-tooltip)</code> でテキストを注入。
+      <code>@starting-style</code> でフェードイン付き（Chrome 117+ / Safari 17.5+）。
+      位置は <code>data-pos</code> 属性で切り替え。
+    </p>
+
+    <div class="demo-row">
+      <div class="demo-group">
+        <p class="demo-label">位置バリエーション</p>
+        <div class="demo-buttons">
+          <button class="btn" data-tooltip="上に表示されます" data-pos="top">
+            Top
+          </button>
+          <button class="btn" data-tooltip="下に表示されます" data-pos="bottom">
+            Bottom
+          </button>
+          <button class="btn" data-tooltip="左に表示されます" data-pos="left">
+            Left
+          </button>
+          <button class="btn" data-tooltip="右に表示されます" data-pos="right">
+            Right
+          </button>
+        </div>
+      </div>
+
+      <div class="demo-group">
+        <p class="demo-label">インラインテキスト</p>
+        <p class="demo-text">
+          CSSの
+          <span class="tip" data-tooltip="Cascading Style Sheets" data-pos="top">CSS</span>
+          はウェブページの見た目を定義します。
+          <span class="tip" data-tooltip="HyperText Markup Language" data-pos="top">HTML</span>
+          と組み合わせて使われます。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Approach 2: hidden element + CSS Anchor Positioning ========== -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        Approach 2 — Hidden element + CSS Anchor Positioning
+      </h2>
+      <span class="badge badge--yellow">Chrome 125+</span>
+    </div>
+    <p class="section-desc">
+      tooltip 要素を <code>visibility: hidden</code> で隠し、
+      <code>:hover</code> / <code>:focus-visible</code> で表示。
+      CSS Anchor Positioning の <code>position-try-fallbacks</code> で
+      画面端に近づくと自動で位置をflipする。
+      擬似要素と違い<strong>HTML要素として書けるためリッチなコンテンツも可能</strong>。
+    </p>
+
+    <div class="demo-row">
+      <div class="demo-group">
+        <p class="demo-label">基本 + 画面端 flip</p>
+        <div class="demo-buttons">
+          <div class="anchor-wrap">
+            <button class="btn" id="anc-1">ホバーしてみて</button>
+            <span class="anchor-tip" style="position-anchor: --anc-1;">
+              画面端でflipします
+            </span>
+          </div>
+          <div class="anchor-wrap">
+            <button class="btn" id="anc-2">キーボード対応</button>
+            <span class="anchor-tip" style="position-anchor: --anc-2;">
+              Tabキーでもフォーカスで表示
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="demo-group">
+        <p class="demo-label">リッチコンテンツ</p>
+        <div class="demo-buttons">
+          <div class="anchor-wrap">
+            <button class="btn btn-outline" id="anc-rich">
+              CSS Anchor Positioning とは？
+            </button>
+            <span class="anchor-tip anchor-tip--rich" style="position-anchor: --anc-rich;">
+              <strong>CSS Anchor Positioning</strong>
+              <hr />
+              ある要素（anchor）を基準として別の要素を配置するCSS仕様。
+              <code>anchor-name</code> と <code>position-anchor</code> で紐付け、
+              <code>anchor()</code> 関数で位置を参照する。
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 比較表 ========== -->
+  <section class="section">
+    <h2 class="section-title">比較まとめ</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th><code>::after</code> + <code>attr()</code></th>
+          <th>Hidden element + Anchor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ブラウザ対応</td>
+          <td class="good">全モダンブラウザ</td>
+          <td class="warn">Chrome 125+</td>
+        </tr>
+        <tr>
+          <td>コンテンツ</td>
+          <td class="warn">テキストのみ（attr()）</td>
+          <td class="good">HTML要素・画像・なんでも可</td>
+        </tr>
+        <tr>
+          <td>画面端の自動flip</td>
+          <td class="bad">手動で実装が必要</td>
+          <td class="good">position-try-fallbacks で自動</td>
+        </tr>
+        <tr>
+          <td>キーボードアクセシビリティ</td>
+          <td class="warn">:focus-visible で対応可</td>
+          <td class="good">:focus-visible で自動対応</td>
+        </tr>
+        <tr>
+          <td>アニメーション</td>
+          <td class="warn">@starting-style（Chrome 117+）</td>
+          <td class="warn">@starting-style（Chrome 117+）</td>
+        </tr>
+        <tr>
+          <td>Top Layerへの配置</td>
+          <td class="bad">なし（z-indexで管理）</td>
+          <td class="bad">なし（Popoverと組み合わせれば可）</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</Layout>
+
+<style>
+  .back {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+  }
+  .back:hover {
+    color: var(--color-text);
+  }
+
+  .section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .section-desc {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+
+  .section-desc strong {
+    color: var(--color-text);
+  }
+
+  .badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.2em 0.7em;
+    border-radius: 99px;
+  }
+
+  .badge--green {
+    background: color-mix(in srgb, #4ade80 15%, transparent);
+    color: #4ade80;
+  }
+
+  .badge--yellow {
+    background: color-mix(in srgb, #facc15 15%, transparent);
+    color: #facc15;
+  }
+
+  code {
+    background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+    color: var(--color-accent-light);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+
+  .demo-row {
+    display: flex;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .demo-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .demo-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .demo-buttons {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .demo-text {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    max-width: 400px;
+  }
+
+  .btn {
+    background: var(--color-accent);
+    color: #fff;
+    border: none;
+    padding: 0.55em 1.2em;
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn:hover {
+    opacity: 0.85;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent-light);
+  }
+
+  /* ============================================
+     Approach 1: ::after + attr(data-tooltip)
+     ============================================ */
+
+  [data-tooltip] {
+    position: relative;
+  }
+
+  /* tooltip 本体 */
+  [data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    white-space: nowrap;
+    background: #1e1e2e;
+    color: var(--color-text);
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.4em 0.8em;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    z-index: 100;
+
+    /* デフォルト: top */
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+
+    /* 表示/非表示トランジション */
+    opacity: 0;
+    scale: 0.95;
+    transition:
+      opacity 0.15s ease,
+      scale 0.15s ease,
+      display 0.15s allow-discrete;
+    display: none;
+  }
+
+  /* 矢印 */
+  [data-tooltip]::before {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    z-index: 101;
+    border: 5px solid transparent;
+
+    opacity: 0;
+    transition:
+      opacity 0.15s ease,
+      display 0.15s allow-discrete;
+    display: none;
+  }
+
+  /* hover / focus-visible で表示 */
+  [data-tooltip]:hover::after,
+  [data-tooltip]:focus-visible::after {
+    display: block;
+    opacity: 1;
+    scale: 1;
+
+    @starting-style {
+      opacity: 0;
+      scale: 0.95;
+    }
+  }
+
+  [data-tooltip]:hover::before,
+  [data-tooltip]:focus-visible::before {
+    display: block;
+    opacity: 1;
+
+    @starting-style {
+      opacity: 0;
+    }
+  }
+
+  /* ---- top (default) ---- */
+  [data-pos="top"]::after {
+    bottom: calc(100% + 8px);
+    top: auto;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+  [data-pos="top"]::before {
+    bottom: calc(100% + 3px);
+    top: auto;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    border-top-color: var(--color-border);
+  }
+
+  /* ---- bottom ---- */
+  [data-pos="bottom"]::after {
+    top: calc(100% + 8px);
+    bottom: auto;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+  [data-pos="bottom"]::before {
+    top: calc(100% + 3px);
+    bottom: auto;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    border-bottom-color: var(--color-border);
+  }
+
+  /* ---- left ---- */
+  [data-pos="left"]::after {
+    right: calc(100% + 8px);
+    left: auto;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+  }
+  [data-pos="left"]::before {
+    right: calc(100% + 3px);
+    left: auto;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    border-left-color: var(--color-border);
+  }
+
+  /* ---- right ---- */
+  [data-pos="right"]::after {
+    left: calc(100% + 8px);
+    right: auto;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+  }
+  [data-pos="right"]::before {
+    left: calc(100% + 3px);
+    right: auto;
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+    border-right-color: var(--color-border);
+  }
+
+  /* インラインテキスト用 */
+  .tip {
+    color: var(--color-accent-light);
+    text-decoration: underline dotted;
+    cursor: default;
+  }
+
+  /* ============================================
+     Approach 2: Hidden element + Anchor Positioning
+     ============================================ */
+
+  .anchor-wrap {
+    position: relative;
+  }
+
+  /* anchor-name を各ボタンに付与 */
+  #anc-1 { anchor-name: --anc-1; }
+  #anc-2 { anchor-name: --anc-2; }
+  #anc-rich { anchor-name: --anc-rich; }
+
+  .anchor-tip {
+    /* 初期状態: 非表示 */
+    visibility: hidden;
+    opacity: 0;
+    scale: 0.95;
+    pointer-events: none;
+
+    /* Anchor Positioning で配置 */
+    position: fixed;
+    inset: unset;
+    bottom: calc(anchor(top) - 8px);
+    left: anchor(left);
+
+    /* position-try-fallbacks で画面端 flip */
+    position-try-fallbacks:
+      --flip-bottom,
+      --flip-right,
+      --flip-left;
+
+    white-space: nowrap;
+    background: #1e1e2e;
+    color: var(--color-text);
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 0.4em 0.8em;
+    border-radius: 6px;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+    max-width: 260px;
+    line-height: 1.6;
+
+    transition:
+      opacity 0.15s ease,
+      scale 0.15s ease,
+      visibility 0.15s;
+  }
+
+  /* flip パターン定義 */
+  @position-try --flip-bottom {
+    bottom: auto;
+    top: calc(anchor(bottom) + 8px);
+    left: anchor(left);
+  }
+
+  @position-try --flip-right {
+    left: calc(anchor(right) + 8px);
+    bottom: auto;
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  @position-try --flip-left {
+    right: calc(100% - anchor(left) + 8px);
+    left: auto;
+    bottom: auto;
+    top: 50%;
+    translate: 0 -50%;
+  }
+
+  /* hover / focus-visible で表示 */
+  .anchor-wrap:hover .anchor-tip,
+  .anchor-wrap:focus-within .anchor-tip {
+    visibility: visible;
+    opacity: 1;
+    scale: 1;
+    pointer-events: auto;
+
+    @starting-style {
+      opacity: 0;
+      scale: 0.95;
+    }
+  }
+
+  .anchor-tip--rich {
+    white-space: normal;
+    font-size: 0.82rem;
+  }
+
+  .anchor-tip--rich strong {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-size: 0.875rem;
+  }
+
+  .anchor-tip--rich hr {
+    border: none;
+    border-top: 1px solid var(--color-border);
+    margin: 0.4rem 0;
+  }
+
+  /* ============================================
+     比較表
+     ============================================ */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .compare-table th,
+  .compare-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .compare-table th {
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .compare-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .compare-table td:first-child {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .good { color: #4ade80; }
+  .warn { color: #facc15; }
+  .bad  { color: #f87171; }
+</style>

@@ -1,0 +1,513 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const slides = [
+  { id: 1, label: "Slide 1", color: "#7c6aff", emoji: "🚀", title: "CSS Scroll Snap", desc: "スクロールを特定位置に吸着させるCSS仕様" },
+  { id: 2, label: "Slide 2", color: "#06b6d4", emoji: "🎯", title: ":target セレクタ", desc: "URLハッシュと一致する要素にスタイルを適用" },
+  { id: 3, label: "Slide 3", color: "#f59e0b", emoji: "✨", title: "Scroll-driven Animations", desc: "スクロール位置に連動したアニメーション" },
+  { id: 4, label: "Slide 4", color: "#10b981", emoji: "🎨", title: "@starting-style", desc: "要素が表示された瞬間のアニメーション初期値を定義" },
+];
+---
+
+<Layout title="Carousel UI" description="モダンCSSだけで作るカルーセルUIの比較">
+  <a href="/" class="back">← 一覧へ</a>
+  <h1 class="page-title">Carousel UI</h1>
+  <p class="page-subtitle">JSなし・モダンCSSだけで作る2つのアプローチを比較</p>
+
+  <!-- ========== Approach 1: scroll-snap + :target ========== -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        Approach 1 — <code>scroll-snap</code> + <code>:target</code>
+      </h2>
+      <span class="badge badge--green">全ブラウザ対応</span>
+    </div>
+    <p class="section-desc">
+      <code>scroll-snap-type</code> でスライドに吸着スクロールを付与。
+      前後ボタン・ドットナビは <code>&lt;a href="#slide-n"&gt;</code> のアンカーリンクで実装。
+      <code>:target</code> セレクタで現在のスライドを検知しドットをハイライト。
+    </p>
+
+    <div class="carousel-1-wrap">
+      <!-- スライド本体 -->
+      <div class="carousel-1" id="carousel-1">
+        {slides.map((s) => (
+          <div class="c1-slide" id={`c1-s${s.id}`} style={`--slide-color: ${s.color}`}>
+            <span class="slide-emoji">{s.emoji}</span>
+            <h3 class="slide-title">{s.title}</h3>
+            <p class="slide-desc">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- 前後ボタン -->
+      <div class="c1-nav">
+        {slides.map((s, i) => (
+          <>
+            {i > 0 && (
+              <a class="c1-btn c1-prev" href={`#c1-s${s.id - 1}`} aria-label="前へ" data-target={s.id}>‹</a>
+            )}
+            {i < slides.length - 1 && (
+              <a class="c1-btn c1-next" href={`#c1-s${s.id + 1}`} aria-label="次へ" data-target={s.id}>›</a>
+            )}
+          </>
+        ))}
+      </div>
+
+      <!-- ドットナビ -->
+      <div class="c1-dots" role="tablist">
+        {slides.map((s) => (
+          <a class="c1-dot" href={`#c1-s${s.id}`} aria-label={s.label} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Approach 2: scroll-snap + Scroll-driven Animations ========== -->
+  <section class="section">
+    <div class="section-header">
+      <h2 class="section-title">
+        Approach 2 — <code>scroll-snap</code> + Scroll-driven Animations
+      </h2>
+      <span class="badge badge--yellow">Chrome 115+</span>
+    </div>
+    <p class="section-desc">
+      <code>animation-timeline: view(inline)</code> で各スライドの表示状態をアニメーションに変換。
+      ドットインジケーターがスクロール位置に<strong>完全に追従</strong>する。
+      ボタンナビは不要で、スワイプ・ドラッグのみで操作。
+      プログレスバーもスクロール連動で自動更新。
+    </p>
+
+    <div class="carousel-2-wrap">
+      <!-- プログレスバー -->
+      <div class="c2-progress-wrap">
+        <div class="c2-progress"></div>
+      </div>
+
+      <!-- スライド本体 -->
+      <div class="carousel-2" id="carousel-2">
+        {slides.map((s) => (
+          <div class="c2-slide" style={`--slide-color: ${s.color}`}>
+            <span class="slide-emoji">{s.emoji}</span>
+            <h3 class="slide-title">{s.title}</h3>
+            <p class="slide-desc">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- ドットインジケーター（スクロール連動） -->
+      <div class="c2-dots" aria-hidden="true">
+        {slides.map(() => (
+          <div class="c2-dot" />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== 比較表 ========== -->
+  <section class="section">
+    <h2 class="section-title">比較まとめ</h2>
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th></th>
+          <th><code>scroll-snap</code> + <code>:target</code></th>
+          <th>+ Scroll-driven Animations</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ブラウザ対応</td>
+          <td class="good">全モダンブラウザ</td>
+          <td class="warn">Chrome 115+</td>
+        </tr>
+        <tr>
+          <td>前後ボタンナビ</td>
+          <td class="good">アンカーリンクで実装可</td>
+          <td class="bad">CSSのみでは困難</td>
+        </tr>
+        <tr>
+          <td>ドットインジケーター</td>
+          <td class="warn">:target でハイライト（URL変化あり）</td>
+          <td class="good">スクロール完全追従・URL変化なし</td>
+        </tr>
+        <tr>
+          <td>プログレスバー</td>
+          <td class="bad">CSSのみでは困難</td>
+          <td class="good">scroll() timeline で自動更新</td>
+        </tr>
+        <tr>
+          <td>スワイプ操作</td>
+          <td class="good">ネイティブスクロールで対応</td>
+          <td class="good">ネイティブスクロールで対応</td>
+        </tr>
+        <tr>
+          <td>URL変化</td>
+          <td class="warn">あり（#slide-n）</td>
+          <td class="good">なし</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</Layout>
+
+<style>
+  .back {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    transition: color 0.2s;
+  }
+  .back:hover { color: var(--color-text); }
+
+  .section {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .section-desc {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+  }
+
+  .section-desc strong { color: var(--color-text); }
+
+  .badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 0.2em 0.7em;
+    border-radius: 99px;
+  }
+  .badge--green {
+    background: color-mix(in srgb, #4ade80 15%, transparent);
+    color: #4ade80;
+  }
+  .badge--yellow {
+    background: color-mix(in srgb, #facc15 15%, transparent);
+    color: #facc15;
+  }
+
+  code {
+    background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+    color: var(--color-accent-light);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+  }
+
+  /* ---- 共通スライドカード ---- */
+  .slide-emoji {
+    font-size: 2.5rem;
+    line-height: 1;
+    display: block;
+    margin-bottom: 1rem;
+  }
+
+  .slide-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--slide-color);
+  }
+
+  .slide-desc {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  /* =============================================
+     Approach 1: scroll-snap + :target
+     ============================================= */
+  .carousel-1-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+
+  .carousel-1 {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    gap: 0;
+    border-radius: var(--radius);
+    scrollbar-width: none;
+  }
+  .carousel-1::-webkit-scrollbar { display: none; }
+
+  .c1-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    padding: 2.5rem 2rem;
+    background: color-mix(in srgb, var(--slide-color) 10%, var(--color-bg));
+    border: 1px solid color-mix(in srgb, var(--slide-color) 30%, transparent);
+    border-radius: var(--radius);
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* 前後ボタン: :target で表示切り替え */
+  .c1-nav {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.75rem;
+  }
+
+  .c1-btn {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1.3rem;
+    line-height: 1;
+    backdrop-filter: blur(4px);
+    transition: background 0.15s, border-color 0.15s;
+
+    /* デフォルトは非表示 */
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .c1-btn:hover {
+    background: var(--color-surface);
+    border-color: var(--color-accent);
+  }
+
+  /*
+    :target で現在のスライドを検知し、
+    対応するボタンを表示する。
+    初期表示（#なし）は slide1 扱いで next のみ表示。
+  */
+  :root:not(:has(:target)) .c1-btn[data-target="1"],
+  #c1-s1:target ~ * .c1-btn[data-target="1"],
+  #c1-s2:target ~ * .c1-btn[data-target="2"],
+  #c1-s3:target ~ * .c1-btn[data-target="3"],
+  #c1-s4:target ~ * .c1-btn[data-target="4"] {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ドットナビ */
+  .c1-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .c1-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.2s, scale 0.2s;
+    display: block;
+    scale: 1;
+  }
+
+  /* :target でアクティブドットをハイライト */
+  :root:not(:has(:target)) .c1-dots a:nth-child(1),
+  #c1-s1:target ~ * .c1-dots a:nth-child(1),
+  #c1-s2:target ~ * .c1-dots a:nth-child(2),
+  #c1-s3:target ~ * .c1-dots a:nth-child(3),
+  #c1-s4:target ~ * .c1-dots a:nth-child(4) {
+    background: var(--color-accent);
+    scale: 1.3;
+  }
+
+  /* =============================================
+     Approach 2: scroll-snap + Scroll-driven Animations
+     ============================================= */
+  .carousel-2-wrap {
+    position: relative;
+  }
+
+  /* プログレスバー: カルーセル全体のスクロールに連動 */
+  .c2-progress-wrap {
+    height: 3px;
+    background: var(--color-border);
+    border-radius: 99px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+
+  .c2-progress {
+    height: 100%;
+    background: var(--color-accent);
+    border-radius: 99px;
+    transform-origin: left;
+    scale: 0 1;
+
+    animation: progress-grow linear both;
+    animation-timeline: scroll(nearest inline);
+  }
+
+  @keyframes progress-grow {
+    from { scale: 0 1; }
+    to   { scale: 1 1; }
+  }
+
+  .carousel-2 {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    border-radius: var(--radius);
+    scrollbar-width: none;
+  }
+  .carousel-2::-webkit-scrollbar { display: none; }
+
+  .c2-slide {
+    flex: 0 0 100%;
+    scroll-snap-align: start;
+    padding: 2.5rem 2rem;
+    background: color-mix(in srgb, var(--slide-color) 10%, var(--color-bg));
+    border: 1px solid color-mix(in srgb, var(--slide-color) 30%, transparent);
+    border-radius: var(--radius);
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* ドット: 各スライドの view() timeline に連動してハイライト */
+  .c2-dots {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .c2-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-border);
+    transition: background 0.15s;
+  }
+
+  /*
+    各スライドが画面内に入ったとき、対応するドットをアニメーション。
+    animation-timeline: view(inline) でインライン方向のビューポート交差を追跡。
+    range: entry 45% exit 55% でスライドが中央付近に来たときのみアクティブ。
+  */
+  .c2-slide:nth-child(1) { timeline-scope: --slide-1; }
+  .c2-slide:nth-child(2) { timeline-scope: --slide-2; }
+  .c2-slide:nth-child(3) { timeline-scope: --slide-3; }
+  .c2-slide:nth-child(4) { timeline-scope: --slide-4; }
+
+  .carousel-2 {
+    timeline-scope: --slide-1, --slide-2, --slide-3, --slide-4;
+  }
+
+  .c2-slide:nth-child(1) { view-timeline: --slide-1 inline; }
+  .c2-slide:nth-child(2) { view-timeline: --slide-2 inline; }
+  .c2-slide:nth-child(3) { view-timeline: --slide-3 inline; }
+  .c2-slide:nth-child(4) { view-timeline: --slide-4 inline; }
+
+  .c2-dots .c2-dot:nth-child(1) {
+    animation: dot-active linear both;
+    animation-timeline: --slide-1;
+    animation-range: entry 45% exit 55%;
+  }
+  .c2-dots .c2-dot:nth-child(2) {
+    animation: dot-active linear both;
+    animation-timeline: --slide-2;
+    animation-range: entry 45% exit 55%;
+  }
+  .c2-dots .c2-dot:nth-child(3) {
+    animation: dot-active linear both;
+    animation-timeline: --slide-3;
+    animation-range: entry 45% exit 55%;
+  }
+  .c2-dots .c2-dot:nth-child(4) {
+    animation: dot-active linear both;
+    animation-timeline: --slide-4;
+    animation-range: entry 45% exit 55%;
+  }
+
+  @keyframes dot-active {
+    0%, 100% {
+      background: var(--color-border);
+      scale: 1;
+    }
+    50% {
+      background: var(--color-accent);
+      scale: 1.4;
+    }
+  }
+
+  /* =============================================
+     比較表
+     ============================================= */
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+
+  .compare-table th,
+  .compare-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .compare-table th {
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .compare-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .compare-table td:first-child {
+    color: var(--color-text-muted);
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .good { color: #4ade80; }
+  .warn { color: #facc15; }
+  .bad  { color: #f87171; }
+</style>
